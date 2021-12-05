@@ -85,7 +85,9 @@ Ori.Quantity as ' Số lượng ',
 Pro.Description as ' Mô tả sản phẩm '
 from OrderItem Ori
 join Orderr Ord On Ori.Orderr_ID = Ord.ID
-join Product Pro On Ori.Product_ID = Pro.ID;
+join Product Pro On Ori.Product_ID = Pro.ID
+join Customer Cus On Ord.Customer_ID = Cus.ID
+where Cus.ID = 1;
 -- 4.
 Select 
 Pro.Name as 'Tên sản phẩm',
@@ -102,6 +104,6 @@ from OrderItem Ori
 join Orderr Ord On Ori.Orderr_ID = Ord.ID
 join Product Pro On Ori.Product_ID = Pro.ID
 join Customer Cus On Ord.Customer_ID = Cus.ID
-Group by Pro.Cost, Ori.Quantity;
+Group by Cus.Name;
 
 
