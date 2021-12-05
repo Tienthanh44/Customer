@@ -1,3 +1,4 @@
+Drop database Shoppe;
 create database Shoppe ;
 Use Shoppe;
 create table Customer 
@@ -34,14 +35,15 @@ create table Product
 ID int not null,
 Name varchar(45),
 Description Text,
+Cost NUMERIC(18,5) NOT NULL,
 primary key (ID)
 );
-Insert into Product (ID, Name, Description) Values (1, 'Ban chai',' New ');
-Insert into Product (ID, Name, Description) Values (2, 'Tai nghe',' Hot ');
-Insert into Product (ID, Name, Description) Values (3, 'Dien thoai',' Sale ');
-Insert into Product (ID, Name, Description) Values (4, 'Quan au ',' New ');
-Insert into Product (ID, Name, Description) Values (5, 'Ao somi',' Sale ');
-Insert into Product (ID, Name, Description) Values (6, 'Banh keo',' Combo');
+Insert into Product (ID, Name, Description,Cost) Values (1, 'Ban chai',' New ',10000);
+Insert into Product (ID, Name, Description,Cost) Values (2, 'Tai nghe',' Hot ',100000);
+Insert into Product (ID, Name, Description,Cost) Values (3, 'Dien thoai',' Sale ',2500000);
+Insert into Product (ID, Name, Description,Cost) Values (4, 'Quan au ',' New ',125000);
+Insert into Product (ID, Name, Description,Cost) Values (5, 'Ao somi',' Sale ',230000);
+Insert into Product (ID, Name, Description,Cost) Values (6, 'Banh keo',' Combo',99000);
 create table OrderItem
 (
 ID int not null,
@@ -62,3 +64,44 @@ Insert into OrderItem ( ID, Orderr_ID, Product_ID,Quantity) Values (7, 5, 3, 4);
 Insert into OrderItem ( ID, Orderr_ID, Product_ID,Quantity) Values (8, 6, 1, 4);
 Insert into OrderItem ( ID, Orderr_ID, Product_ID,Quantity) Values (9, 7, 5, 3);
 Insert into OrderItem ( ID, Orderr_ID, Product_ID,Quantity) Values (10, 8, 4, 5);
+Drop table OrderItem;
+Drop table Product;
+Drop table Orderr;
+Drop table Customer;
+-- 1.
+Select 
+Cus.Name as 'Tên khách hàng',
+Cus.PhoneNo as ' Số điện thoại',
+sum( OrI.Orderr_ID) as 'Tổng số đơn hàng'
+from  OrderItem Ori
+join Orderr Ord On Ori.Orderr_ID = Ord.ID
+join Customer Cus On Ord.Customer_ID = Cus.ID
+group by Cus.Name, Cus.PhoneNo;
+-- 2.
+Select 
+Ord.ID as ' Mã đơn hàng ',
+Pro.Name as ' Tên sản phẩm ',
+Ori.Quantity as ' Số lượng ',
+Pro.Description as ' Mô tả sản phẩm '
+from OrderItem Ori
+join Orderr Ord On Ori.Orderr_ID = Ord.ID
+join Product Pro On Ori.Product_ID = Pro.ID;
+-- 4.
+Select 
+Pro.Name as 'Tên sản phẩm',
+sum(Ori.Quantity) as ' Số lượng đã bán '
+from Product Pro 
+join OrderItem Ori On Pro.ID = Ori.Product_ID
+group by Pro.Name;
+-- 5. 
+Select
+Cus.Name as ' Tên khách hàng ',
+sum(Ori.Quantity) as ' Số lượng đã mua ',
+sum(Pro.Cost*Ori.Quantity) as 'Tổng tiền' 
+from OrderItem Ori 
+join Orderr Ord On Ori.Orderr_ID = Ord.ID
+join Product Pro On Ori.Product_ID = Pro.ID
+join Customer Cus On Ord.Customer_ID = Cus.ID
+Group by Pro.Cost, Ori.Quantity;
+
+
